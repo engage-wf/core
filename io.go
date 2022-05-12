@@ -2,6 +2,8 @@ package core
 
 import (
 	"encoding/json"
+	"errors"
+	"io"
 	"os"
 )
 
@@ -10,7 +12,8 @@ func PrintJSON(obj interface{}) {
 	enc.Encode(obj)
 }
 
-func ReadFromStdin(obj interface{}) error {
+func ReadFromStdin(obj interface{}) (error, bool) {
 	dec := json.NewDecoder(os.Stdin)
-	return dec.Decode(obj)
+	err := dec.Decode(obj)
+	return err, errors.Is(err, io.EOF)
 }
